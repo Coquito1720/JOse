@@ -1,0 +1,250 @@
+﻿<!-- ------------------------------------------------------------------------
+SISTEMA : SAR SBP
+SUBSISTEMA : Fabrica
+NOMBRE : DetalleMatrizEsfuerzo.html
+DESCRIPCIÓN : Realiza la gestión del Detalle de Matriz de Esfuerzo
+AUTOR : MCV
+FECHA CREACIÓN : 14/03/2019
+------------------------------------------------------------------------
+FECHA MODIFICACIÓN  EMPLEADO
+------------------------------------------------------------------------>
+<div class="container-fluid" ng-init="fnIniciarD()">
+    <div class="row">
+        <div class="col-md-12 col-xs-12 cls-titulo-opcion">
+            <span class="glyphicon glyphicon-th"></span><label>Detalle de Matriz de Esfuerzo</label>
+        </div>
+        <div class="col-md-12 col-xs-12">
+            <div class="row">
+                <div class="panel panel-default" style="margin-bottom: 0px;">
+                    <div class="panel-body" style="padding-bottom: 0px; padding-top: 2px;">
+                        <div class="col-md-12 col-xs-12">
+                            <div class="row cls-content-ctrl-ses">
+                                <div class="col-md-9">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="">Matriz de esf. :</label>
+                                            <input type="text" name="txtpcMatEsf"
+                                                   style="width:91%;"
+                                                   maxlength="10"
+                                                   solo-enteros
+                                                   class="form-control input-sm col-sm-1"
+                                                   ng-model="registrarReq.pcMatNombre"
+                                                   required 
+                                                   readonly/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="">Leng. Prog. :</label>
+                                            <input type="text" name="txtpcLenAbr"
+                                                   style="width:91%;"
+                                                   maxlength="10"
+                                                   solo-enteros
+                                                   class="form-control input-sm col-sm-1"
+                                                   ng-model="registrarReq.pcLenNombre"
+                                                   required
+                                                   readonly />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="">Clasificacion:</label>
+                                            <input type="text" name="txtpcWorAbr"
+                                                   style="width:91%;"
+                                                   maxlength="10"
+                                                   solo-enteros
+                                                   class="form-control input-sm col-sm-1"
+                                                   ng-model="registrarReq.pcWorNombre"
+                                                   required
+                                                   readonly />
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Complejidad : </label>
+                                            <select class="form-control input-sm"
+                                                    style="width:91%;" 
+                                                    id="ddlComplejidad"
+                                                    ng-model="objMatriz.pnComId"
+                                                    ng-change="fnDetalleMatriz()">
+                                                <option value="">::Seleccione::</option>
+                                                <option ng-repeat="c in lstComboComplejidad" value="{{c.pnComId}}">{{c.pcComAbreviatura}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="" ReadOnly="True" Enabled="False">Linea # :</label>
+                                            <input type="text" name="txtpnLinCan"
+                                                   style="width:91%;"
+                                                   maxlength="10"
+                                                   solo-enteros
+                                                   class="form-control input-sm col-sm-1"
+                                                   ng-model="registrarReq.pnLinCantidad"
+                                                   required
+                                                   readonly />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="" ReadOnly="True" Enabled="False">F. Ini Vig. :</label>
+                                            <input type="text" name="txtpcFecIni"
+                                                   style="width:91%;"
+                                                   maxlength="10"
+                                                   solo-enteros
+                                                   class="form-control input-sm col-sm-1"
+                                                   ng-model="registrarReq.pcLinFecVigIni"
+                                                   required
+                                                   readonly />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="" ReadOnly="True" Enabled="False">F. Fin Vig. :</label>
+                                            <input type="text" name="txtpcFecFin"
+                                                   style="width:91%;"
+                                                   maxlength="10"
+                                                   solo-enteros
+                                                   class="form-control input-sm col-sm-1"
+                                                   ng-model="registrarReq.pcLinFecVigFin"
+                                                   required
+                                                   readonly />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-xs-12">
+                                    <div class="btn-group cls-ctrl-ope">
+                                        <button class="btn btn-primary btn-sm" ng-click="registrarDetalle(item)"><i class="fa fa-plus"></i>Registrar</button>
+                                        <button class="btn btn-danger btn-sm" ng-click="btnMatrizEsfuerzo()"><i class="fa fa-remove"></i>Retornar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-xs-12">
+                            <div class="table-responsive">
+                                <table id="dv-table" class="table table-bordered table-ses table-condensed table-hover" dt-options="dtOptions">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>ID</th>
+                                            <th>Objeto</th>
+                                            <th ng-repeat="item in ListarPerfilTecnico" style="text-align: center; vertical-align:middle;">{{item.pcPerNombre}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="item in ListarDetalleMatriz">
+                                            <td>
+                                                <button class="btn btn-warning btn-xs" ng-click="nuevoObjeto(item)" title="Editar"><span class="glyphicon glyphicon-edit"></span></button>
+                                            </td>
+                                            <td ng-repeat="items in item">{{items != null ? items : 0}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modalPerfilTecnico" class="modal fade modal" tabindex="-1" data-backdrop="static"
+     role="dialog" >
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="padding-bottom:0px;padding-top:10px;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">:: Detalle de Perfil Técnico por Objeto ::</h4>
+            </div>
+            <div class="modal-body" style="padding-bottom:3px; padding-top:3px;">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label>Tipo de Objeto: </label>
+                        <select ng-model="nuevoObjeto.objeto"
+                                id="objeto"
+                                class="form-control input-sm fullSize"
+                                ng-options="obj as obj.pcTipNombre for obj in ListadoObjetos track by obj.pnTipId"
+                                ng-disabled="lockObj = 1 ? true : false">
+                            <option value="">{{objeto.pcObjeto}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <div class="table-responsive">
+                        <table id="dv-table" class="table table-bordered table-ses table-condensed table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: center; vertical-align:middle; width:40px;" height="20">ID</th>
+                                    <th style="text-align: center; vertical-align:middle; width:100px;" height="20">Perfil Técnico</th>
+                                    <th style="text-align: center; vertical-align:middle; width:70px;" height="20">Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="item in ListarDetalleLinea">
+                                    <td>{{item.nPerId}}</td>
+                                    <td>{{item.cPerNombre}}</td>
+                                    <td><input type="number" style="width:70px;" ng-model="item.nLDetValor" value="{{item.nLDetValor}}"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+
+                <button class="btn btn-primary btn-sm"  data-dismiss="modal" type="submit" ng-click="fnAsociar2()" align="right" style="width: 70px">
+                    <i class="glyphicon glyphicon-ok"></i> Registrar
+                </button>
+                <button class="btn btn-default btn-sm" type="submit" data-dismiss="modal" align="right" style="width: 65px">
+                    <i class="glyphicon glyphicon-remove"></i> Cerrar
+                </button>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalPerfilTecnico2" class="modal fade modal" tabindex="-1" data-backdrop="static"
+     role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="padding-bottom:0px;padding-top:10px;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">:: Detalle de Perfil Técnico por Objeto ::</h4>
+            </div>
+            <div class="modal-body" style="padding-bottom:3px; padding-top:3px;">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label>Tipo de Objeto: </label>
+                        <select ng-model="nuevoObjeto.objeto"
+                                ng-change="detalleLinea(item)"
+                                id="objeto2"
+                                class="form-control input-sm fullSize"
+                                ng-options="obj as obj.pcTipAbreviatura for obj in ListadoObjetos track by obj.pnTipId">
+                            <option value="">::Seleccione::</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <div class="table-responsive">
+                        <table id="dv-tableDetalle" class="table table-bordered table-ses table-condensed table-hover table-striped" >
+                            <thead>
+                                <tr>
+                                    <th style="text-align: center; vertical-align:middle; width:40px;" height="20">ID</th>
+                                    <th style="text-align: center; vertical-align:middle; width:100px;" height="20">Perfil Técnico</th>
+                                    <th style="text-align: center; vertical-align:middle; width:70px;" height="20">Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="item in ListarDetalleLinea">
+                                    <td>{{item.nPerId}}</td>
+                                    <td>{{item.cPerNombre}}</td>
+                                    <td><input type="number" style="width:70px;" ng-model="item.nLDetValor" value="{{item.nLDetValor}}"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary btn-sm" type="submit" data-dismiss="modal" ng-click="getindexObjeto()" align="right" style="width: 70px">
+                    <i class="glyphicon glyphicon-ok"></i> Guardar
+                </button>
+                <button class="btn btn-default btn-sm" type="submit" ng-click="fnCerrar()" align="right" style="width: 65px">
+                    <i class="glyphicon glyphicon-remove"></i> Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

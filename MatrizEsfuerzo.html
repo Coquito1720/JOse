@@ -1,0 +1,309 @@
+﻿<!-- ------------------------------------------------------------------------
+SISTEMA : SAR SBP
+SUBSISTEMA : Fabrica
+NOMBRE : MatrizEsfuerzo.html
+DESCRIPCIÓN : Realiza la gestión de Matriz de Esfuerzo
+AUTOR : MCV
+FECHA CREACIÓN : 14/03/2019
+------------------------------------------------------------------------
+FECHA MODIFICACIÓN  EMPLEADO
+------------------------------------------------------------------------>
+
+<style>
+    button.md-datepicker-calendar-icon{
+    height:10px;
+    }
+</style>
+
+<div class="container-fluid" ng-init="fnIniciar()">
+    <div class="row">
+        <div class="col-md-12 col-xs-12 cls-titulo-opcion">
+            <span class="glyphicon glyphicon-th"></span><label>Gestionar Matriz de Esfuerzo</label>
+        </div>
+        <div class="col-md-12 col-xs-12">
+            <div class="row">
+                <div class="panel panel-default" style="margin-bottom: 0px;">
+                    <div class="panel-body" style="padding-bottom: 0px; padding-top: 2px;">
+                        <form name="formRegistrar" ng-submit="MatrizEsfuerzo().$valid" novalidate>
+                            <div class="col-md-12 col-xs-12">
+                                <div class="row cls-content-ctrl-ses">
+                                    <div class="col-md-9">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="">Leng. Prog.:</label>
+                                                <select class="form-control input-sm col-sm-1"
+                                                        ng-change="";
+                                                        id="combdd"
+                                                        ng-model="filtroLeng.pnLenId"
+                                                        ng-options="obj as obj.pcLenNombre for obj in ListadoLenguajes track by obj.pnLenId"
+                                                        ng-disabled="lock == 1 ? true : false"
+                                                        name="dllpnLenId"       
+                                                        required>
+                                                    <option value="">::Seleccione::</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="">Clasificación:</label>
+                                                <select class="form-control input-sm col-sm-1"
+                                                        ng-model="filtroWor.pnWorId"
+                                                        ng-options="obj as obj.pcWorNombre for obj in ListadoClasificacion track by obj.pnWorId"
+                                                        ng-disabled="lock == 1 ? true : false"
+                                                        name="dllpnWorId"
+                                                        required>
+                                                    <option value="">::Seleccione::</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-xs-12">
+                                        <div class="btn-group cls-ctrl-ope">
+                                            <button id="Consultar" class="btn btn-default btn-sm" ng-click="fnFiltro()"><i class="fa fa-search"></i>Consultar</button>
+                                            <button class="btn btn-primary btn-sm" ng-click="fnPreRegistrar()"><i class="fa fa-plus"></i>Registrar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-xs-12">
+                                <div class="table-responsive">
+                                    <table id="dv-table" class="table table-bordered table-ses table-condensed table-hover table-striped" datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align: center; vertical-align:middle; width:5%;" height="20">ID</th>
+                                                <th style="text-align: center; vertical-align:middle; width:180px;" height="20">Nombre</th>
+                                                <th style="text-align: center; vertical-align:middle; width:120px;" height="20">Leng. Prog.</th>
+                                                <th style="text-align: center; vertical-align:middle; width:100px;" height="20">Clasificación</th>
+                                                <th style="text-align: center; vertical-align:middle; width:90px;" height="20">Fecha Inicio</th>
+                                                <th style="text-align: center; vertical-align:middle; width:90px;" height="20">Fecha Fin</th>
+                                                <th style="text-align: center; vertical-align:middle; width:50px;" height="20">L. Base</th>
+                                                <th style="text-align: center; vertical-align:middle; width:70px;" height="20"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody ng-show="!swMnt">
+                                            <tr ng-repeat="item in ListarMatriz">
+                                                <td>{{item.pnMatId}}</td>
+                                                <td>{{item.pcMatNombre}}</td>
+                                                <td>{{item.pcLenAbreviatura}}</td>
+                                                <td>{{item.pcWorAbreviatura}}</td>
+                                                <td>{{item.pcLinFecVigIni}}</td>
+                                                <td>{{item.pcLinFecVigFin}}</td>
+                                                <td><a href ng-click="btnDetalleHistorico(item)" title="Ver historial">{{item.pnLinCantidad}}</a></td>
+                                                <td>
+                                                    <button class="btn btn-warning btn-xs" ng-click="fnPreEditar(item)" title="Editar"><span class="glyphicon glyphicon-edit"></span></button>
+                                                    <button class="btn btn-danger btn-xs" ng-click="fnEliminar(item)" title="Eliminar"><span class="glyphicon glyphicon-remove"></span></button>
+                                                    <button class="btn btn-primary btn-xs" ng-click="detalleMatriz(item)" title="Detalle Matriz"><span class="fa fa-plus"></span></button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot ng-show="swMnt">
+                                            <tr>
+                                                <td><input style="width:70px;" height="20" type="text" class="form-control input-sm" ng-model="objMatriz.pnMatId" readonly /></td>
+                                                <td>
+                                                    <input type="text" name="txtpcMatNombre"
+                                                           style="width:85%;"
+                                                           maxlength="30"
+                                                           only-alphabets
+                                                           class="form-control input-sm col-sm-1"
+                                                           ng-model="objMatriz.pcMatNombre"
+                                                           required />
+                                                    <span title="Campo obligatorio"
+                                                          ng-show="!objMatriz.pcMatNombre"
+                                                          style="color:red;">
+                                                        (*)
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <select class="form-control input-sm col-sm-1"
+                                                            style="vertical-align:middle; width:150px;"
+                                                            height="20"
+                                                            ng-model="objMatriz.pnLenId"
+                                                            name="dllpnLenId"
+                                                            id="dllpnLenId"
+                                                            required>
+                                                        <option value="">::Seleccione::</option>
+                                                        <option ng-repeat="item in ListadoLenguajes"
+                                                                value="{{item.pnLenId}}">
+                                                            {{item.pcLenNombre}}
+                                                        </option>
+
+                                                    </select>
+                                                    <span title="Campo obligatorio"
+                                                          ng-show="!objMatriz.pnLenId"
+                                                          style="color:red;">
+                                                        (*)
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <select class="form-control input-sm col-sm-1"
+                                                            style="vertical-align:middle; width:120px;"
+                                                            height="20"
+                                                            ng-model="objMatriz.pnWorId"
+                                                            name="dllpnWorId"
+                                                            id="dllpnWorId"
+                                                            required>
+                                                        <option value="">::Seleccione::</option>
+                                                        <option ng-repeat="item in ListadoClasificacion"
+                                                                value="{{item.pnWorId}}">
+                                                            {{item.pcWorNombre}}
+                                                        </option>
+
+                                                    </select>
+                                                    <span title="Campo obligatorio"
+                                                          ng-show="!objMatriz.pnWorId"
+                                                          style="color:red;">
+                                                        (*)
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <input id="datepicker"
+                                                           name="dtpcLinFecVigIni"
+                                                           placeholder="dd/mm/aaaa"
+                                                           type="text"
+                                                           ng-model="objMatriz.pcLinFecVigIni"
+                                                           style="width:110px;"
+                                                           jsdatepicker
+                                                           required
+                                                           autocomplete="on"
+                                                           ng-text-change="event_cambiarFecha('i')"
+                                                           ng-change="event_cambiarFecha('i')"
+                                                           class="form-control input-sm"
+                                                           maxlength="10"
+                                                           readonly/>
+                                                    <span title="Campo obligatorio"
+                                                          ng-show="!objMatriz.pcLinFecVigIni"
+                                                          style="color:red;">
+                                                        (*)
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <input id="datepicker2"
+                                                           autocomplete="off"
+                                                           name="dtpcLinFecVigFin"
+                                                           placeholder="dd/mm/aaaa"
+                                                           type="text"
+                                                           ng-model="objMatriz.pcLinFecVigFin"
+                                                           style="width:110px;"
+                                                           jsdatepicker
+                                                           required
+                                                           ng-text-change="event_cambiarFecha('f')"
+                                                           ng-change="event_cambiarFecha('f')"
+                                                           class="form-control input-sm"
+                                                           maxlength="10"
+                                                           readonly/>
+                                                    <span title="Campo obligatorio"
+                                                          ng-show="!objMatriz.pcLinFecVigFin"
+                                                          style="color:red;">
+                                                        (*)
+                                                    </span>
+                                                </td>
+                                                <td><input style="width:70px;" height="20" type="text" class="form-control input-sm" ng-model="objMatriz.pnLinCantidad" readonly /></td>
+                                                <td>
+                                                    <button class="btn btn-success btn-xs" ng-click="btnConfirmacion()" title="Guardar"><span class="glyphicon glyphicon-ok"></span></button>
+                                                    <button class="btn btn-default btn-xs" ng-click="fnCancelar()" title="Cancelar"><span class="fa fa-undo"></span></button>
+                                                </td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modalListadoHistorico" class="modal fade modal" tabindex="-1" data-backdrop="static"
+     role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="padding-bottom:0px;padding-top:10px;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">::  Listado histórico de matriz de esfuerzo ::</h4>
+            </div>
+            <div class="modal-body" style="padding-bottom:3px; padding-top:3px;">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label></label>
+                    </div>
+                </div>
+                <div>
+                    <div class="table-responsive">
+                        <table id="dv-table" class="table table-bordered table-ses table-condensed table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: center; vertical-align:middle;" height="20">ID</th>
+                                    <th style="text-align: center; vertical-align:middle;" height="20">F. Ini. Vigencia</th>
+                                    <th style="text-align: center; vertical-align:middle;" height="20">F. Fin. Vigencia</th>
+                                    <th style="text-align: center; vertical-align:middle;" height="20">F. Registro</th>
+                                    <th style="text-align: center; vertical-align:middle;" height="20"></th>
+                                    <th style="display:none; text-align:center; vertical-align:middle;" height="20">Z</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="item in ListarMatrizHistorial">
+                                    <td>{{$index+1}}</td>
+                                    <td>{{item.pcLinFecVigIni}}</td>
+                                    <td>{{item.pcLinFecVigFin}}</td>
+                                    <td>{{item.pcLinFecRegistro}}</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-xs" ng-click="detalleMatriz2(item)" title="Ver Matriz de Esfuerzo"><span class="fa fa-plus"></span></button>
+                                    </td>
+                                    <td style="display:none;">x</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default btn-sm" type="submit" data-dismiss="modal" align="right" style="width: 65px">
+                    <i class="glyphicon glyphicon-remove"></i> Cerrar
+                </button>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        var temp = new Date();
+        $('#datetimepicker1').datetimepicker({
+            format: 'DD/MM/YYYY',
+            locale:'es'
+
+        });
+    });
+</script>
+
+<div id="modalConfirmar" class="modal fade modal" tabindex="-1" data-backdrop="static"
+     role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="padding-bottom:0px;padding-top:10px;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">:: Mensaje de Confirmación ::</h4>
+            </div>
+            <div class="modal-body" style="padding-bottom:3px; padding-top:3px;">
+                <div class="row" style="text-align:center">
+                    <div class="col-md-10">
+                        <label>¿Desea crear una nueva linea base?</label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary btn-sm" type="submit" data-dismiss="modal" align="right" style="width: 65px" ng-click="btn_ClickSi().$valid" title="Si, crear nueva linea">
+                    <i class="glyphicon glyphicon-ok"></i> Sí
+                </button>
+                <button class="btn btn-danger btn-sm" type="submit" data-dismiss="modal" align="right" style="width: 65px" ng-click="btn_ClickNo().$valid" title="No, crear nueva linea">
+                    <i class="glyphicon glyphicon-remove"></i> No
+                </button>
+                <button class="btn btn-default btn-sm" type="submit" data-dismiss="modal" align="right" style="width: 65px" title="Cancelar acción">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
